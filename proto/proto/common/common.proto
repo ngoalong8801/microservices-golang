@@ -1,0 +1,275 @@
+syntax = "proto3";
+
+package common;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "proto/grpc/common";
+
+enum ErrorCode {
+  USERNAME_OR_PASSWORD_INVALID = 0;
+  USERNAME_OR_PASSWORD_INCORRECT = 1;
+  MISSING_REQUIRE_FIELDS = 2;
+  INVALID_PARAMETERS = 3;
+  BAD_REQUEST = 4;
+  INTERNAL_SERVER_ERROR = 5;
+  SUCCESS = 6;
+  CANNOT_EXECUTE = 7;
+  NO_CHANGE = 8;
+  WF_INVALID_ENTRY_STATE = 9;
+  FILE_TOO_LARGE = 10;
+  RSA_CANNOT_CREATED_OR_UPDATED = 11;
+}
+
+enum Status {
+  INACTIVE = 0;
+  ACTIVE = 1;
+}
+
+enum ScheduledTask {
+  TASK_MARKET_OPERATOR_REMINDER = 0;
+  TASK_MARKET_OPERATOR_EXPIRED = 1;
+}
+
+message ErrorResponse {
+  ErrorCode     error_code = 1;
+  string        error_description = 2;
+  map<string, string> errors = 3;
+}
+
+message SuccessResponse {
+  string        message = 1;
+  google.protobuf.Any data = 2;
+}
+
+message BaseResponse {
+  oneof response {
+    SuccessResponse success_response = 1;
+    ErrorResponse   error_response = 2;
+  }
+}
+
+message DeleteRequest {
+  string        id = 1;
+  repeated string ids = 2;
+}
+
+message DeleteResponse {
+  int32         success = 1;
+  int32         error = 2;
+  int32         ignore = 3;
+  int32         cannot_execute = 4;
+}
+
+message BatchDeleteResponse {
+  message Data {
+    int32 num_success = 1;
+    int32 num_error = 2;
+    int32 num_ignore = 3;
+    int32 num_cannot_execute = 4;
+  }
+
+  bool success = 1;
+  oneof response {
+    Data data = 2;
+    Error error = 3;
+  }
+}
+
+message SpreadsheetResponse {
+  string                        file_name = 1;
+  int64                         file_size = 2;
+  int64                         num_rows = 3;
+  int64                         num_valid_rows = 4;
+  int64                         num_invalid_rows = 5;
+  repeated google.protobuf.Any  data = 6;
+  repeated string               errors = 7;
+}
+
+message Point {
+  double x_axis = 1;
+  double y_axis = 2;
+}
+
+message DraftInfo {
+  bool is_draft = 1;
+  bool is_cloned = 2;
+  string ref_id = 3;
+}
+
+message BooleanResponse {
+  oneof response {
+    BooleanSuccessResponse success_response = 1;
+    ErrorResponse   error_response = 2;
+  }
+}
+
+message BooleanSuccessResponse {
+  bool  result = 1;
+}
+
+//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+//
+// Refactor
+//
+//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+
+message Error {
+  ErrorCode code = 1;
+  string message = 2;
+  string exception = 3;
+  map<string, string> details = 4;
+}
+
+message NoContentResponse {
+  bool success = 1;
+  Error error = 2;
+}
+
+message OnlyIdResponse {
+  message Data {
+    string id = 1;
+  }
+
+  bool success = 1;
+  oneof response {
+    Data data = 2;
+    Error error = 3;
+  }
+}
+
+message OnlyCodeResponse {
+  message Data {
+    string code = 1;
+  }
+
+  bool success = 1;
+  oneof response {
+    Data data = 2;
+    Error error = 3;
+  }
+}
+
+message FindByIdRequest {
+  string id = 1;
+}
+
+
+message FindByIdsRequest {
+  repeated string ids = 1;
+}
+
+message FindByCodeRequest {
+  string code = 1;
+}
+
+message FindByCodesRequest {
+  repeated string codes = 2;
+}
+
+message PageRequest {
+  int32 page = 1;
+  int32 size = 2;
+  string sort = 3;
+  string direction = 4;
+}
+
+message PageResponse {
+  message Data {
+    int32 page = 1;
+    int32 size = 2;
+    int64 total_elements = 3;
+    int32 total_pages = 4;
+    repeated google.protobuf.Any items = 5;
+  }
+
+  bool success = 1;
+  oneof response {
+    Data data = 2;
+    Error error = 3;
+  }
+}
+
+message ListResponse {
+  message Data {
+    int64 total_elements = 1;
+    repeated google.protobuf.Any items = 2;
+  }
+
+  bool success = 1;
+  oneof response {
+    Data data = 2;
+    Error error = 3;
+  }
+}
+
+message GetResponse {
+  message Data {
+    google.protobuf.Any item = 1;
+  }
+
+  bool success = 1;
+  oneof response {
+    Data data = 2;
+    Error error = 3;
+  }
+}
+
+message Numeric2TextMetadata {
+  int32 index = 1;
+  string human_text = 2; // readable text
+  string filipino_text = 3; // text translated to Filipino
+}
+
+message UploadFileRequest {
+  bytes content = 1;
+  string name = 2;
+  string extension = 3;
+  int64 size = 4;
+}
+
+message UploadFileResponse {
+  message Data {
+    string content = 1;
+    string original_filename = 2;
+    string pre_signed_url = 3;
+  }
+
+  bool success = 1;
+  oneof response {
+    Data data = 2;
+    Error error = 3;
+  }
+}
+
+message ChangelogIssuer {
+  string external_id = 1;
+  string first_name = 2;
+  string last_name = 3;
+}
+
+message Changelog {
+  string changelog_id = 1;
+  ChangelogIssuer issuer = 2;
+  google.protobuf.Timestamp issued_at = 3;
+  string op = 4;
+}
+
+message CheckResponse {
+  bool success = 1;
+  bool result = 2;
+  Error error = 3;
+}
+
+message BatchCheckResponse {
+  bool success = 1;
+  map<string /*identifier*/, bool> result = 2;
+  Error error = 3;
+}
+
+message FindByKeyword{
+  string search_term = 1;
+}

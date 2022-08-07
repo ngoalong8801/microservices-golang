@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+import "common/common.proto";
+
+package user;
+
+option go_package = "proto/grpc/account";
+
+service UserService{
+  rpc GetUser(common.FindByIdRequest) returns (GetUserResponse) {};
+}
+
+message User {
+  string user_id = 1;
+  string user_name = 2;
+}
+
+message GetUserResponse {
+  message Data {
+    User user = 1;
+  }
+
+  bool success = 1;
+  oneof response {
+    Data data = 2;
+    common.Error error = 3;
+  }
+}
+
