@@ -7,4 +7,5 @@
 
 ### Go Generated ###
 .DS_Store
-proto/grpc
+/proto/grpc
+/server/dal/query/
