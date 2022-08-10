@@ -6,20 +6,9 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
-	"go.uber.org/fx"
 	"go/server/config"
 	"log"
 )
-
-const (
-	host     = "localhost"
-	port     = 5432
-	user     = "postgres"
-	password = "123456"
-	dbname   = "test1"
-)
-
-var Module = fx.Invoke(Start)
 
 func Start(config config.Configuration) {
 
