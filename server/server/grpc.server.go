@@ -15,15 +15,15 @@ import (
 var Module = fx.Invoke(registerServer)
 
 func registerServer(
-	lifecycle fx.Lifecycle, configuration config.Configuration, conn net.Listener,
+	lifecycle fx.Lifecycle, configuration config.Configuration, conn net.Listener, accountServer *server.AccountServer,
 ) {
 	lifecycle.Append(
 		fx.Hook{
 			OnStart: func(ctx context.Context) error {
 				grpcServer := grpc.NewServer()
-				accountServer := server.AccountServer{}
+				//accountServer := server.AccountServer{}
 
-				account.RegisterUserServiceServer(grpcServer, &accountServer)
+				account.RegisterUserServiceServer(grpcServer, accountServer)
 
 				fmt.Printf("Starting gRPC server at : %s:%d \n", configuration.Grpc.Host, configuration.Grpc.Port)
 
@@ -32,7 +32,6 @@ func registerServer(
 						log.Fatal(err)
 					}
 				}()
-
 				return nil
 			},
 			OnStop: func(ctx context.Context) error {

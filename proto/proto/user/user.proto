@@ -15,7 +15,10 @@ message User {
   string user_name = 2;
 }
 
+
+
 message GetUserResponse {
+
   message Data {
     User user = 1;
   }

@@ -30,6 +30,7 @@ type (
 		Username string `mapstructure:"username"`
 		Password string `mapstructure:"password"`
 		Name     string `mapstructure:"name"`
+		Sslmode  string `mapstructure:"sslmode"`
 	}
 
 	Grpc struct {
