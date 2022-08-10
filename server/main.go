@@ -2,7 +2,6 @@ package main
 
 import (
 	"go.uber.org/fx"
-	"go/server/cmd/migration"
 	"go/server/config"
 	"go/server/dal"
 	"go/server/grpc"
@@ -18,7 +17,6 @@ func start() fx.Option {
 		dal.Module,
 		grpc.Module,
 		config.Module,
-		migration.Module,
 		server.Module,
 	)
 }

@@ -19,17 +19,24 @@ const (
 	dbname   = "test1"
 )
 
-var Module = fx.Invoke(start)
+var Module = fx.Invoke(Start)
 
-func start(config config.Configuration) {
+func Start(config config.Configuration) {
 
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
-		host, port, user, password, dbname)
+		config.Database.Host, config.Database.Port, config.Database.Username, config.Database.Password, config.Database.Name)
 
 	log.Println(psqlInfo)
 
 	db, err := sql.Open("postgres", psqlInfo)
+
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+
+		}
+	}(db)
 
 	driver, err := postgres.WithInstance(db, &postgres.Config{})
 
@@ -40,6 +47,6 @@ func start(config config.Configuration) {
 	err = m.Up()
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Database has " + err.Error())
 	}
 }

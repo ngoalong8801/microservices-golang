@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"go.uber.org/fx"
+	"go/server/cmd/migration"
 	"go/server/config"
 	"go/server/grpc/server"
 	"google.golang.org/grpc"
@@ -20,9 +21,10 @@ func registerServer(
 	lifecycle.Append(
 		fx.Hook{
 			OnStart: func(ctx context.Context) error {
-				grpcServer := grpc.NewServer()
-				//accountServer := server.AccountServer{}
+				// Start migration
+				go migration.Start(configuration)
 
+				grpcServer := grpc.NewServer()
 				account.RegisterUserServiceServer(grpcServer, accountServer)
 
 				fmt.Printf("Starting gRPC server at : %s:%d \n", configuration.Grpc.Host, configuration.Grpc.Port)

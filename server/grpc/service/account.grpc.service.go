@@ -5,6 +5,7 @@ import (
 	"go/server/grpc/repository"
 	"proto/grpc/account"
 	"proto/grpc/common"
+	"strconv"
 )
 
 type AccountService struct {
@@ -23,7 +24,7 @@ func (sv *AccountService) GetUser(ctx context.Context, req *common.FindByIdReque
 
 	userRes := &account.User{
 		UserName: user.Name,
-		UserId:   string(user.ID),
+		UserId:   strconv.FormatInt(user.ID, 10),
 	}
 	return userRes, nil
 }
