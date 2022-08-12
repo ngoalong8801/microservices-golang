@@ -41,6 +41,17 @@ type (
 )
 
 func NewConfig() Configuration {
+	conf := &Configuration{}
+
+	err := viper.Unmarshal(conf)
+
+	if err != nil {
+		fmt.Printf("unable decode into config struct, %v", err)
+	}
+	return *conf
+}
+
+func InitConfig() {
 	viper.SetConfigType(configType)
 	viper.SetConfigFile(configFile)
 
@@ -49,13 +60,4 @@ func NewConfig() Configuration {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-
-	conf := &Configuration{}
-
-	err = viper.Unmarshal(conf)
-
-	if err != nil {
-		fmt.Printf("unable decode into config struct, %v", err)
-	}
-	return *conf
 }

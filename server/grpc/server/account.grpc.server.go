@@ -2,7 +2,7 @@ package server
 
 import (
 	"context"
-	"go/server/grpc/service"
+	"github.com/PhuMinh08082001/server-cobra/grpc/service"
 	"proto/grpc/account"
 	"proto/grpc/common"
 )

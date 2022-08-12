@@ -14,8 +14,9 @@ const TableNameUser = "users"
 
 // User mapped from table <users>
 type User struct {
-	ID   int64
-	Name string
+	ID        int64
+	Name      string
+	Ordertabs []Ordertab
 }
 
 // TableName User's table name

@@ -3,8 +3,8 @@ package repository
 import (
 	"context"
 	"fmt"
-	"go/server/dal/model"
-	"go/server/dal/query"
+	"github.com/PhuMinh08082001/server-cobra/dal/model"
+	"github.com/PhuMinh08082001/server-cobra/dal/query"
 	"gorm.io/gorm"
 	"proto/grpc/common"
 	"strconv"

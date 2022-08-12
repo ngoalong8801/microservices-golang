@@ -3,10 +3,9 @@ package server
 import (
 	"context"
 	"fmt"
+	"github.com/PhuMinh08082001/server-cobra/config"
+	"github.com/PhuMinh08082001/server-cobra/grpc/server"
 	"go.uber.org/fx"
-	"go/server/cmd/migration"
-	"go/server/config"
-	"go/server/grpc/server"
 	"google.golang.org/grpc"
 	"log"
 	"net"
@@ -18,13 +17,12 @@ var Module = fx.Invoke(registerServer)
 func registerServer(
 	lifecycle fx.Lifecycle, configuration config.Configuration, conn net.Listener, accountServer *server.AccountServer,
 ) {
+	grpcServer := grpc.NewServer()
 	lifecycle.Append(
 		fx.Hook{
 			OnStart: func(ctx context.Context) error {
 				// Start migration
-				go migration.Start(configuration)
 
-				grpcServer := grpc.NewServer()
 				account.RegisterUserServiceServer(grpcServer, accountServer)
 
 				fmt.Printf("Starting gRPC server at : %s:%d \n", configuration.Grpc.Host, configuration.Grpc.Port)
@@ -37,7 +35,8 @@ func registerServer(
 				return nil
 			},
 			OnStop: func(ctx context.Context) error {
-				fmt.Println("Stop Grpc Server")
+				grpcServer.Stop()
+				log.Println("Stop Grpc Server !")
 				return nil
 			},
 		},
