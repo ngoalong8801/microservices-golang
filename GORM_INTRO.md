@@ -1,3 +1,0 @@
-# Gorm Introduction
-
-## 
